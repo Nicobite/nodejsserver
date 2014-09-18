@@ -14,7 +14,7 @@ console.log("Starting web server at " + serverUrl + ":" + port);
 
 
 var mysql      = require('mysql');
-var connection = mysql.createConnection({
+var connectionDB = mysql.createConnection({
   host     : "localhost",
   user     : "root",
   password : "root",
@@ -22,14 +22,18 @@ var connection = mysql.createConnection({
 });
 
 
-//connection.connect();
+//connectionDB.connect();
 
-connection.query(
-	'SELECT * from messages', 
+connectionDB.query(
+	'SELECT * FROM messages', 
 	function(err, rows, fields){
 	  if (err) throw err;
-	  console.log('The solution is: ', rows[0].solution);
-	  connection.end();
+	  else{
+		console.log('[request] line#1: ' + rows[0]['action']);
+		console.log('[request] line#2: ' + rows[1]['action']);
+		//console.log('[request] line#3: ' + rows[2]['action']);
+	  }
+	  connectionDB.end();
 	}
 );
 
