@@ -21,9 +21,7 @@ var connectionDB = mysql.createConnection({
   database : "test1"
 });
 
-
 //connectionDB.connect();
-
 connectionDB.query(
 	'SELECT * FROM messages', 
 	function(err, rows, fields){
