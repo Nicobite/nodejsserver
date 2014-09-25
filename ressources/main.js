@@ -3,11 +3,11 @@ trackball();
 animate();
 
 /* Mise en valeur d'un niveau par rapport à l'autre */
-document.addEventListener ("CheckboxStateChange", lvl1_checkbox_handler, false);
+document.addEventListener ("CheckboxStateChange", checkbox_handler, false);
 var checkbox_lvl1 = document.getElementById("lvl1_grey");
 var checkbox_lvl2 = document.getElementById("lvl2_grey")
 
-function lvl1_checkbox_handler(){
+function checkbox_handler(){
 	if(checkbox_lvl1.checked){
 		lvl1.traverse(function(node){
 			if (node.material) {
