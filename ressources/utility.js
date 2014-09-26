@@ -60,7 +60,7 @@ function draw_transition(x,y,z,direction){
 	geometry.faces.push(new THREE.Face3(0,2,3));
 	//geometry.computeFaceNormals();
 	var material = new THREE.MeshBasicMaterial({
-        color: 0x000000,
+		color: 0x000000,
 		linewidth: 2
     });//*/
 	var line = new THREE.Mesh(geometry, material);

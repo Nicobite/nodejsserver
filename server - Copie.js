@@ -1,4 +1,7 @@
-var port = 8080;
+// A very basic web server in node.js
+// Stolen from: Node.js for Front-End Developers by Garann Means (p. 9-10)
+ 
+var port = 5555;
 var serverUrl = "127.0.0.1";
  
 var http = require("http");
@@ -8,7 +11,7 @@ var fs = require("fs");
 
 var page = "test.html";
  
-console.log("[Server] Starting web server at " + serverUrl + ":" + port);
+console.log("Starting web server at " + serverUrl + ":" + port);
 
 
 var mysql      = require('mysql');
@@ -18,9 +21,25 @@ var connectionDB = mysql.createConnection({
   password : "root",
   database : "test1"
 });
-connectionDB.connect();
 
-server = http.createServer( function(req, res) {
+//connectionDB.connect();
+connectionDB.query(
+	'SELECT * FROM messages', 
+	function(err, rows, fields){
+	  if (err) throw err;
+	  else{
+		console.log('[request] line#1: ' + rows[0]['action']);
+		console.log('[request] line#2: ' + rows[1]['action']);
+		//console.log('[request] line#3: ' + rows[2]['action']);
+	  }
+	  connectionDB.end();
+	}
+);
+
+//
+//*/
+
+http.createServer( function(req, res) {
 	var now = new Date();
 	var filename = req.url || page;
 	var ext = path.extname(filename);
@@ -32,26 +51,25 @@ server = http.createServer( function(req, res) {
 		".txt": "text/plain",
 		".jpg": "image/jpeg",
 		".gif": "image/gif",
-		".png": "image/png",
-		".ico": "image/ico"
+		".png": "image/png"
 	};
 	var isValidExt = validExtensions[ext];
 	if (isValidExt) {
 		localPath += filename;
 		path.exists(localPath, function(exists) {
 			if(exists) {
-				//console.log("Serving file: " + localPath);
+				console.log("Serving file: " + localPath);
 				getFile(localPath, res, ext);
 			} else {
-				console.log("[Server] File not found: " + localPath);
+				console.log("File not found: " + localPath);
 				res.writeHead(404, {'Content-Type': 'text/plain'});
-				res.end("[Server] "+filename+' not found\n');
+				res.end(filename+' not found\n');
 			}
 		});
 	} else {
-		console.log("[Server] Invalid file extension detected: " + ext)
+		console.log("Invalid file extension detected: " + ext)
 	}
-});
+}).listen(port, serverUrl);
  
 function getFile(localPath, res, mimeType) {
 	fs.readFile(localPath, function(err, contents) {
@@ -66,28 +84,3 @@ function getFile(localPath, res, mimeType) {
 		}
 	});
 }
-
-var io = require('socket.io').listen(server);
-console.log('[Server] Created socket.io socket.');
-io.sockets.on('connection', function (socket) {
-	console.log('[Client] A client has connected.');
-	connectionDB.query(
-		'SELECT * FROM messages', 
-		function(err, rows, fields){
-			if (err) throw err;
-			else{
-				console.log('[Client] Sent all current messages to client.');
-				//console.log(rows);
-				//console.log('[request] line#1: ' + rows[0]['action']);
-				socket.emit('connectionReply', rows);
-			}
-			//connectionDB.end();
-			
-		}
-	);
-	socket.on('heyDBchanged', function (message) {
-		console.log('la base de données a été changée');
-	}); //*/
-});
-
-server.listen(port, serverUrl);

@@ -1,3 +1,4 @@
+//alert('[Main] '+initialDB['date']);
 init();
 trackball();
 animate();
@@ -37,3 +38,5 @@ function checkbox_handler(){
 		});
 	}
 }
+
+//alert('MAIN END');
